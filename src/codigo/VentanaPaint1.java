@@ -1,15 +1,14 @@
 package codigo;
 
-
-
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 
 /*
@@ -17,75 +16,63 @@ import javax.swing.ImageIcon;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author ruben
  */
 public class VentanaPaint1 extends javax.swing.JFrame {
-    
-    
-   ImageIcon iconoTriangulo = new ImageIcon("/Imagenes/triangulo.png");
-   ImageIcon iconoCirculo = new ImageIcon("/Imagenes/circulo.png");
-     ImageIcon iconoHexagono = new ImageIcon("/Imagenes/hexagono.png");
-     ImageIcon iconoEstrella = new ImageIcon("/Imagenes/estrella.png");
-     ImageIcon iconoCuadrado = new ImageIcon("/Imagenes/Cuadrado.png");
+
+   Line2D.Double linea = new Line2D.Double();
    
-    BufferedImage buffer,buffer2 = null;
- 
-    
+   
+
+    BufferedImage buffer, buffer2,buffer3 = null;
+
     Color colorSeleccionado = Color.BLUE;
-    
+
     int formaSeleccionada = 0;
-    
+
     //creo un objeto de un circulo
     Circulo miCirculo;
     Cuadrado miCuadrado;
     Triangulo miTriangulo;
     Pentagono miPentagono;
     Hexagono miHexagono;
+    Linea miLinea;
     
+    
+
     //segunda forma de hacerlo
     Forma miforma;
     int numLados = 0;
-    
-    Graphics2D bufferGraphics,buffer2Graphics,lienzographics = null;
-    
-    //defino el icono
-    ImageIcon icono;
-    
+
+    Graphics2D bufferGraphics, buffer2Graphics,buffer3Graphics, lienzographics = null;
+
     public VentanaPaint1() {
         initComponents();
         inicializarBuffers();
         EligeColor.setSize(630, 480);
         Guardar.setSize(750, 400);
-            
-           
+
     }
-    
-    private void imprimirDocumento(){
-        
+
+    private void imprimirDocumento() {
+
     }
-    
-    
-    private void inicializarBuffers(){
+
+    private void inicializarBuffers() {
         lienzographics = (Graphics2D) lienzo.getGraphics();
         //creo una imagen del mismo ancho y alto que el 
         //lienzo
         //hacemos un casteo
         buffer = (BufferedImage) lienzo.createImage(lienzo.getWidth(), lienzo.getHeight());
-         bufferGraphics = buffer.createGraphics();
+        bufferGraphics = buffer.createGraphics();
         //dibujamos rectangulo blanco de tamaño del lienzo
         bufferGraphics.setColor(Color.WHITE);
         bufferGraphics.fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
-        
-        
-        
-        
-        
+
         //inicializo el segundo buffer
-        
-         //creo una imagen del mismo ancho y alto que el 
+        //creo una imagen del mismo ancho y alto que el 
         //lienzo
         //hacemos un casteo
         buffer2 = (BufferedImage) lienzo.createImage(lienzo.getWidth(), lienzo.getHeight());
@@ -93,25 +80,18 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         //dibujamos rectangulo blanco de tamaño del lienzo
         buffer2Graphics.setColor(Color.white);
         buffer2Graphics.fillRect(0, 0, buffer2.getWidth(), buffer2.getHeight());
-    
+
     }
-    
-    
-    
-    
-    
+
     @Override
-    public void paint(Graphics g){
-           super.paint(g);
-          
+    public void paint(Graphics g) {
+        super.paint(g);
+
         //dibujamos el buffer con las coordenadas que le indicamos
         lienzographics.drawImage(buffer, 0, 0, null);
-           
-           
-        }
-    
-    
-    
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,11 +134,14 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         botonAzul16 = new javax.swing.JButton();
         botonAzul17 = new javax.swing.JButton();
         botonBorrar = new javax.swing.JButton();
-        botonLineaas = new javax.swing.JButton();
+        botonDibujoLibre = new javax.swing.JButton();
+        botonLineas = new javax.swing.JButton();
+        botonZoom = new javax.swing.JSlider();
+        botonAgrandarTamaño = new javax.swing.JSlider();
         jMenuBar1 = new javax.swing.JMenuBar();
         MenuArchivo = new javax.swing.JMenu();
         MenuGuardar = new javax.swing.JMenuItem();
-        MenuImprimir = new javax.swing.JMenu();
+        menuImprimir = new javax.swing.JMenuItem();
         MenuEditar = new javax.swing.JMenu();
 
         botonAceptar.setText("Aceptar");
@@ -235,11 +218,11 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         lienzo.setLayout(lienzoLayout);
         lienzoLayout.setHorizontalGroup(
             lienzoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 881, Short.MAX_VALUE)
         );
         lienzoLayout.setVerticalGroup(
             lienzoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 306, Short.MAX_VALUE)
+            .addGap(0, 493, Short.MAX_VALUE)
         );
 
         botonColor.setText("Más  Colores");
@@ -452,11 +435,17 @@ public class VentanaPaint1 extends javax.swing.JFrame {
             }
         });
 
-        botonLineaas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1487550202_translate.png"))); // NOI18N
-        botonLineaas.setToolTipText("dibujar linea");
-        botonLineaas.addMouseListener(new java.awt.event.MouseAdapter() {
+        botonDibujoLibre.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/1487550202_translate.png"))); // NOI18N
+        botonDibujoLibre.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                botonLineaasMousePressed(evt);
+                botonDibujoLibreMousePressed(evt);
+            }
+        });
+
+        botonLineas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/linea.png"))); // NOI18N
+        botonLineas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                botonLineasMousePressed(evt);
             }
         });
 
@@ -470,13 +459,13 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         });
         MenuArchivo.add(MenuGuardar);
 
-        MenuImprimir.setText("Imprimir...");
-        MenuImprimir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                MenuImprimirMousePressed(evt);
+        menuImprimir.setText("Imprimir...");
+        menuImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuImprimirActionPerformed(evt);
             }
         });
-        MenuArchivo.add(MenuImprimir);
+        MenuArchivo.add(menuImprimir);
 
         jMenuBar1.add(MenuArchivo);
 
@@ -492,21 +481,25 @@ public class VentanaPaint1 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(36, Short.MAX_VALUE)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonCirculos, javax.swing.GroupLayout.PREFERRED_SIZE, 42, Short.MAX_VALUE)
-                            .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(botonCirculos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonCuadrados, javax.swing.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE)
-                            .addComponent(botonEstrella, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(botonCuadrados, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(botonEstrella, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonTriangulo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, Short.MAX_VALUE)
-                            .addComponent(botonPentagono, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(8, 8, 8)
-                        .addComponent(botonLineaas, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                            .addComponent(botonTriangulo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(botonPentagono, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(botonDibujoLibre, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(41, 41, 41)
+                        .addComponent(botonAgrandarTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(botonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -552,6 +545,10 @@ public class VentanaPaint1 extends javax.swing.JFrame {
                         .addGap(12, 12, 12))
                     .addComponent(lienzo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(botonZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -560,85 +557,113 @@ public class VentanaPaint1 extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(botonCirculos)
-                                    .addComponent(botonCuadrados)
-                                    .addComponent(botonTriangulo))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonEstrella)
-                                    .addComponent(botonPentagono)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(botonAzul, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul3, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(botonAzul7, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul9, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul8, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul10, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul6, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul11, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(botonAzul13, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul15, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul14, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul16, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul12, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(botonAzul17, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addComponent(botonColor, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(botonCuadrados, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(botonTriangulo)
+                                .addComponent(botonCirculos))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(botonAgrandarTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(botonDibujoLibre)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonEstrella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonPentagono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(botonLineaas)
-                            .addComponent(botonBorrar))
-                        .addGap(23, 23, 23)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                            .addComponent(botonAzul, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul3, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(botonAzul7, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul9, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul8, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul10, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul6, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul11, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(botonAzul13, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul15, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul14, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul16, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul12, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonAzul17, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(botonColor, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(botonBorrar)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(botonZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
-    
-    
+
     private void lienzoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMousePressed
-            switch (numLados) {
-              
-                case 3:
-                    miforma = new Triangulo(evt.getX(),evt.getY(),
-                colorSeleccionado,true); break;
-                
-                case 4:
-                    miforma = new Cuadrado(evt.getX(),evt.getY(),
-                colorSeleccionado,true); break;
-                case 5:
-                     miforma = new Pentagono(evt.getX(),evt.getY(),
-                colorSeleccionado,true); break;
-                case 6:
-                     miforma = new Hexagono(evt.getX(),evt.getY(),
-                colorSeleccionado,true); break;
-                case 100:
-                miforma = new Circulo(evt.getX(),evt.getY(),
-                colorSeleccionado,true); break;
-                case 12:
-                miforma = new Estrella(evt.getX(),evt.getY(),
-                colorSeleccionado,true); break;
-            }
        
+        
+        
+        switch (numLados) {
+
+            case 3:
+                miforma = new Triangulo(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                break;
+
+            case 4:
+                miforma = new Cuadrado(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                break;
+            case 5:
+                miforma = new Pentagono(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                break;
+            case 6:
+                miforma = new Hexagono(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                break;
+            case 100:
+                miforma = new Circulo(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                break;
+            case 12:
+                miforma = new Estrella(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                break;
+            case 0:
+                miforma = new Linea(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
+                
+            case 1: miforma = new Linea(evt.getX(), evt.getY(),
+                        Color.WHITE, true);
+        }
+
+        
+        
+        switch (formaSeleccionada){
+            
+            case 0:
+            linea.x1 = evt.getX();
+            linea.x2 = evt.getX();
+            linea.y1 = evt.getY();
+            linea.y2 = evt.getY();
+            
+            bufferGraphics.draw(linea);break;
+            
+            
+        }
 //        switch(formaSeleccionada){
 //        case 0: miCirculo =new Circulo(evt.getX(), evt.getY(), 10, colorSeleccionado,true);
 //        miCirculo.dibujate(bufferGraphics,evt.getX());
@@ -667,25 +692,44 @@ public class VentanaPaint1 extends javax.swing.JFrame {
 //        
 //        
 //    }
-        
-        repaint(0,0,1,1);
-      
+        repaint(0, 0, 1, 1);
+
     }//GEN-LAST:event_lienzoMousePressed
 
-    
-    
-    
+
     private void lienzoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMouseDragged
+
+         
         
-         bufferGraphics.drawImage(buffer2, 0, 0, null);
-         
-         miforma.dibujate(bufferGraphics, evt.getX(),evt.getY());
-         
-         /*//borro lo que hubiera en el lienzo
+        bufferGraphics.drawImage(buffer2, 0, 0, null);
+
+        miforma.dibujate(bufferGraphics, evt.getX(), evt.getY());
+
+        
+        
+        switch (formaSeleccionada){
+            
+            case 0:
+            bufferGraphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+            linea.x2 = evt.getX();
+            linea.y2 = evt.getY();
+            
+            bufferGraphics.draw(linea);break;
+            
+            case -2:
+                buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+                linea.x1 = evt.getX();
+            linea.x2 = evt.getX();
+            linea.y1 = evt.getY();
+            linea.y2 = evt.getY();
+            
+            buffer2Graphics.draw(linea);break;
+                
+        }
+        /*//borro lo que hubiera en el lienzo
          g2.setColor(Color.white);
          g2.fillRect(0,0,buffer.getWidth(),buffer.getHeight());
          */
-          
 //          bufferGraphics.drawImage(buffer2, 0, 0, null);
 //          
 //          switch(formaSeleccionada){
@@ -712,21 +756,41 @@ public class VentanaPaint1 extends javax.swing.JFrame {
 //                 //dibujo del hexagono
 //                 case 4: 
 //                   miHexagono.dibujate(bufferGraphics, evt.getY());break;
-
-            
 //          }
+        lienzographics.drawImage(buffer, 0, 0, null);
+        repaint(0, 0, 1, 1);
 
-     
-          lienzographics.drawImage(buffer, 0, 0, null);
-                   repaint(0,0,1,1);
-        
 
     }//GEN-LAST:event_lienzoMouseDragged
 
     private void lienzoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMouseReleased
-      
-         miforma.dibujate(buffer2Graphics,evt.getX(),evt.getY());
+
         
+        buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+        miforma.dibujate(buffer2Graphics, evt.getX(), evt.getY());
+
+        
+        
+        switch (formaSeleccionada){
+            
+            case 0:
+        buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+            linea.x2 = evt.getX();
+           
+            linea.y2 = evt.getY();
+            
+            buffer2Graphics.draw(linea);break;
+            
+            case -2:
+                buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+                linea.x1 = evt.getX();
+            linea.x2 = evt.getX();
+            linea.y1 = evt.getY();
+            linea.y2 = evt.getY();
+            
+            buffer2Graphics.draw(linea);break;
+                
+        }
 //       switch(formaSeleccionada){
 //        case 0: 
 //        miCirculo.dibujate(buffer2Graphics,evt.getX());
@@ -749,9 +813,7 @@ public class VentanaPaint1 extends javax.swing.JFrame {
 //         case 4:
 //              miHexagono.dibujate(buffer2Graphics, evt.getY());
 //                break;
-    
-        
-        
+
     }//GEN-LAST:event_lienzoMouseReleased
 
     private void botonColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonColorMousePressed
@@ -768,30 +830,28 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonCancelarMousePressed
 
     private void botonCirculosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonCirculosMousePressed
-        
-        
-        formaSeleccionada = 0;
-       numLados = 100;
+
+        formaSeleccionada = 100;
+        numLados = 100;
     }//GEN-LAST:event_botonCirculosMousePressed
 
     private void botonCuadradosMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonCuadradosMousePressed
-     
+
         formaSeleccionada = 1;
-       numLados = 4;
+        numLados = 4;
     }//GEN-LAST:event_botonCuadradosMousePressed
 
     private void botonTrianguloMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonTrianguloMousePressed
-      
+
         formaSeleccionada = 2;
-         numLados = 3;
-      
-      
-      
+        numLados = 3;
+
+
     }//GEN-LAST:event_botonTrianguloMousePressed
 
     private void botonPentagonoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonPentagonoMousePressed
-       formaSeleccionada = 3;
-       numLados = 5;
+        formaSeleccionada = 3;
+        numLados = 5;
     }//GEN-LAST:event_botonPentagonoMousePressed
 
     private void botonHexagonoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonHexagonoMousePressed
@@ -804,50 +864,42 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         numLados = 12;
     }//GEN-LAST:event_botonEstrellaMousePressed
 
-    
-    
+
     private void MenuGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuGuardarMousePressed
-             int seleccion = jFileChooser1.showSaveDialog(this);
-      
-      if (seleccion == jFileChooser1.APPROVE_OPTION){
-          //el usuario a pulsado Aceptar
-          File fichero = jFileChooser1.getSelectedFile();
-          
-          //indicamos que guarde el nombre que pongamos
-          String nombre = fichero.getName();
-          
-          //guarda el tipo de extension,busca el punto.pasado ese punto ,
-          //guarda lo que ponga
-          String extension = nombre.substring(nombre.lastIndexOf('.') +1, nombre.length());
+        int seleccion = jFileChooser1.showSaveDialog(this);
+
+        if (seleccion == jFileChooser1.APPROVE_OPTION) {
+            //el usuario a pulsado Aceptar
+            File fichero = jFileChooser1.getSelectedFile();
+
+            //indicamos que guarde el nombre que pongamos
+            String nombre = fichero.getName();
+
+            //guarda el tipo de extension,busca el punto.pasado ese punto ,
+            //guarda lo que ponga
+            String extension = nombre.substring(nombre.lastIndexOf('.') + 1, nombre.length());
 //          if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase(""png)){
-          
-    
-          try{
-              ImageIO.write(buffer, extension, fichero);
-          }
-          catch (IOException e) {
-             
-          }
-       }
-    
-      
-      if(seleccion == jFileChooser1.CANCEL_OPTION){
-           //el usuario a pulsado Cancelar
-         
-      }
-                                                                                
+
+            try {
+                ImageIO.write(buffer, extension, fichero);
+            } catch (IOException e) {
+
+            }
+        }
+
+        if (seleccion == jFileChooser1.CANCEL_OPTION) {
+            //el usuario a pulsado Cancelar
+
+        }
+
     }//GEN-LAST:event_MenuGuardarMousePressed
 
-    private void MenuImprimirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuImprimirMousePressed
-       
-    }//GEN-LAST:event_MenuImprimirMousePressed
-
     private void botonAzulMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzulMousePressed
-       colorSeleccionado = botonAzul.getBackground();
+        colorSeleccionado = botonAzul.getBackground();
     }//GEN-LAST:event_botonAzulMousePressed
 
     private void botonAzul1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul1MousePressed
-       colorSeleccionado = botonAzul1.getBackground();
+        colorSeleccionado = botonAzul1.getBackground();
     }//GEN-LAST:event_botonAzul1MousePressed
 
     private void botonAzul2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul2MousePressed
@@ -855,7 +907,7 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAzul2MousePressed
 
     private void botonAzul3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul3MousePressed
-       colorSeleccionado = botonAzul3.getBackground();
+        colorSeleccionado = botonAzul3.getBackground();
     }//GEN-LAST:event_botonAzul3MousePressed
 
     private void botonAzul4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul4MousePressed
@@ -863,31 +915,31 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAzul4MousePressed
 
     private void botonAzul5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul5MousePressed
-       colorSeleccionado = botonAzul5.getBackground();
+        colorSeleccionado = botonAzul5.getBackground();
     }//GEN-LAST:event_botonAzul5MousePressed
 
     private void botonAzul6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul6MousePressed
-     colorSeleccionado = botonAzul6.getBackground();
+        colorSeleccionado = botonAzul6.getBackground();
     }//GEN-LAST:event_botonAzul6MousePressed
 
     private void botonAzul7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul7MousePressed
-       colorSeleccionado = botonAzul7.getBackground();
+        colorSeleccionado = botonAzul7.getBackground();
     }//GEN-LAST:event_botonAzul7MousePressed
 
     private void botonAzul8MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul8MousePressed
-       colorSeleccionado = botonAzul8.getBackground();
+        colorSeleccionado = botonAzul8.getBackground();
     }//GEN-LAST:event_botonAzul8MousePressed
 
     private void botonAzul9MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul9MousePressed
-       colorSeleccionado = botonAzul9.getBackground();
+        colorSeleccionado = botonAzul9.getBackground();
     }//GEN-LAST:event_botonAzul9MousePressed
 
     private void botonAzul10MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul10MousePressed
-       colorSeleccionado = botonAzul10.getBackground();
+        colorSeleccionado = botonAzul10.getBackground();
     }//GEN-LAST:event_botonAzul10MousePressed
 
     private void botonAzul11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul11MousePressed
-      colorSeleccionado = botonAzul11.getBackground();
+        colorSeleccionado = botonAzul11.getBackground();
     }//GEN-LAST:event_botonAzul11MousePressed
 
     private void botonAzul12MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul12MousePressed
@@ -895,11 +947,11 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAzul12MousePressed
 
     private void botonAzul13MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul13MousePressed
-      colorSeleccionado = botonAzul13.getBackground();
+        colorSeleccionado = botonAzul13.getBackground();
     }//GEN-LAST:event_botonAzul13MousePressed
 
     private void botonAzul14MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul14MousePressed
-       colorSeleccionado = botonAzul14.getBackground();
+        colorSeleccionado = botonAzul14.getBackground();
     }//GEN-LAST:event_botonAzul14MousePressed
 
     private void botonAzul15MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul15MousePressed
@@ -907,7 +959,7 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAzul15MousePressed
 
     private void botonAzul16MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul16MousePressed
-       colorSeleccionado = botonAzul16.getBackground();
+        colorSeleccionado = botonAzul16.getBackground();
     }//GEN-LAST:event_botonAzul16MousePressed
 
     private void botonAzul17MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAzul17MousePressed
@@ -915,12 +967,28 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAzul17MousePressed
 
     private void botonBorrarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonBorrarMousePressed
-    
+     
+        buffer3 = (BufferedImage) lienzo.createImage(lienzo.getWidth(), lienzo.getHeight());
+        buffer3Graphics = buffer2.createGraphics();
+        //dibujamos rectangulo blanco de tamaño del lienzo
+        buffer3Graphics.setColor(Color.white);
+        buffer3Graphics.fillRect(0, 0, buffer2.getWidth(), buffer3.getHeight());
+        
     }//GEN-LAST:event_botonBorrarMousePressed
 
-    private void botonLineaasMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineaasMousePressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_botonLineaasMousePressed
+    private void botonDibujoLibreMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonDibujoLibreMousePressed
+       formaSeleccionada = -2;
+       numLados = 0;
+    }//GEN-LAST:event_botonDibujoLibreMousePressed
+
+    private void botonLineasMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMousePressed
+       formaSeleccionada = 0;
+       numLados = 0;
+    }//GEN-LAST:event_botonLineasMousePressed
+
+    private void menuImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImprimirActionPerformed
+       
+    }//GEN-LAST:event_menuImprimirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -963,8 +1031,8 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     private javax.swing.JMenu MenuArchivo;
     private javax.swing.JMenu MenuEditar;
     private javax.swing.JMenuItem MenuGuardar;
-    private javax.swing.JMenu MenuImprimir;
     private javax.swing.JButton botonAceptar;
+    private javax.swing.JSlider botonAgrandarTamaño;
     private javax.swing.JButton botonAzul;
     private javax.swing.JButton botonAzul1;
     private javax.swing.JButton botonAzul10;
@@ -988,14 +1056,17 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     private javax.swing.JButton botonCirculos;
     private javax.swing.JButton botonColor;
     private javax.swing.JButton botonCuadrados;
+    private javax.swing.JButton botonDibujoLibre;
     private javax.swing.JButton botonEstrella;
     private javax.swing.JButton botonHexagono;
-    private javax.swing.JButton botonLineaas;
+    private javax.swing.JButton botonLineas;
     private javax.swing.JButton botonPentagono;
     private javax.swing.JButton botonTriangulo;
+    private javax.swing.JSlider botonZoom;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel lienzo;
+    private javax.swing.JMenuItem menuImprimir;
     // End of variables declaration//GEN-END:variables
 }
