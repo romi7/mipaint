@@ -13,7 +13,7 @@ import java.awt.geom.Ellipse2D;
 
 /**
  *
- * @author ruben
+ * @author Carlos Román
  */
 public class Circulo extends Forma {
     

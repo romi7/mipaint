@@ -1,10 +1,15 @@
 package codigo;
 
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 
+/**
+ * 
+ * @author Carlos Román
+ */
 
 /*
 La clase forma es la clase comun a todos los objetos graficos que 
@@ -39,7 +44,7 @@ public class Forma extends Polygon{
     
  
     
-     public void dibujate(Graphics2D g2, int posX , int posY){
+     public void dibujate(Graphics2D g2, int posX , int posY, BasicStroke _trazo){
         
         
         int radio =  this.y - posY;
@@ -53,6 +58,7 @@ public class Forma extends Polygon{
             g2.fill(this);
         }
         else{
+            g2.setStroke(_trazo);
             g2.draw(this);
         }
         

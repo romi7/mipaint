@@ -9,15 +9,15 @@ import java.awt.Color;
 
 /**
  *
- * @author ruben
+ * @author Carlos Román
  */
 public class Linea extends Forma{
     
     
-     Color color = null;
+    public Color color = null;
     
     
-    boolean relleno = false;
+   public boolean relleno = false;
     
     public Linea(int _posX, int _posY, Color _color, boolean _relleno){
         super(_posX, _posY,new int[2],new int[2],_color,_relleno, 2);

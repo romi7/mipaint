@@ -13,7 +13,7 @@ import java.awt.geom.Rectangle2D;
 
 /**
  *
- * @author ruben
+ * @author Carlos Román
  */
 public class Cuadrado extends Forma {
     

@@ -11,7 +11,7 @@ import java.awt.Color;
 
 /**
  *
- * @author ruben
+ * @author Carlos Román
  */
 public class Estrella extends Forma {
      public Estrella(int _posX, int _posY, Color _color, boolean _relleno){

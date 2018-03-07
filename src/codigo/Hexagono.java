@@ -13,7 +13,7 @@ import java.awt.Polygon;
 
 /**
  *
- * @author ruben
+ * @author Carlos Román
  */
 public class Hexagono extends Forma {
     

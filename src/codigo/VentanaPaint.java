@@ -1,3 +1,12 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/**
+ *
+ * @author Carlos Román
+ */
 package codigo;
 
 import java.awt.BasicStroke;
@@ -9,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 
 
 /*
@@ -16,47 +26,36 @@ import javax.imageio.ImageIO;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/**
- *
- * @author ruben
- */
-public class VentanaPaint1 extends javax.swing.JFrame {
 
-   Line2D.Double linea = new Line2D.Double();
-   
-   
+public class VentanaPaint extends javax.swing.JFrame {
 
-    BufferedImage buffer, buffer2,buffer3 = null;
+    Line2D.Double linea = new Line2D.Double();
+
+    BufferedImage buffer, buffer2, buffer3 = null;
 
     Color colorSeleccionado = Color.BLUE;
 
     int formaSeleccionada = 0;
 
-    //creo un objeto de un circulo
-    Circulo miCirculo;
-    Cuadrado miCuadrado;
-    Triangulo miTriangulo;
-    Pentagono miPentagono;
-    Hexagono miHexagono;
-    Linea miLinea;
-    
-    
-
-    //segunda forma de hacerlo
-    Forma miforma;
+    //Damos valores a la clase forma para que se pueda utilizar en esta clase e inicializamos el numero de lados.
+    Forma miForma;
     int numLados = 0;
 
-    Graphics2D bufferGraphics, buffer2Graphics,buffer3Graphics, lienzographics = null;
+    Graphics2D bufferGraphics, buffer2Graphics, buffer3Graphics, lienzographics = null;
 
-    public VentanaPaint1() {
+    BasicStroke trazo1 = new BasicStroke(15);
+    BasicStroke trazo2 = new BasicStroke(15,
+            BasicStroke.CAP_BUTT,
+            BasicStroke.JOIN_MITER,
+            10.0f,
+            new float[]{10.0f},
+            0.0f);
+
+    public VentanaPaint() {
         initComponents();
         inicializarBuffers();
         EligeColor.setSize(630, 480);
         Guardar.setSize(750, 400);
-
-    }
-
-    private void imprimirDocumento() {
 
     }
 
@@ -136,13 +135,13 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         botonBorrar = new javax.swing.JButton();
         botonDibujoLibre = new javax.swing.JButton();
         botonLineas = new javax.swing.JButton();
-        botonZoom = new javax.swing.JSlider();
         botonAgrandarTamaño = new javax.swing.JSlider();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         MenuArchivo = new javax.swing.JMenu();
         MenuGuardar = new javax.swing.JMenuItem();
         menuImprimir = new javax.swing.JMenuItem();
-        MenuEditar = new javax.swing.JMenu();
 
         botonAceptar.setText("Aceptar");
         botonAceptar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -218,11 +217,11 @@ public class VentanaPaint1 extends javax.swing.JFrame {
         lienzo.setLayout(lienzoLayout);
         lienzoLayout.setHorizontalGroup(
             lienzoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 881, Short.MAX_VALUE)
+            .addGap(0, 753, Short.MAX_VALUE)
         );
         lienzoLayout.setVerticalGroup(
             lienzoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 493, Short.MAX_VALUE)
+            .addGap(0, 552, Short.MAX_VALUE)
         );
 
         botonColor.setText("Más  Colores");
@@ -441,11 +440,27 @@ public class VentanaPaint1 extends javax.swing.JFrame {
                 botonDibujoLibreMousePressed(evt);
             }
         });
+        botonDibujoLibre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonDibujoLibreActionPerformed(evt);
+            }
+        });
 
         botonLineas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/linea.png"))); // NOI18N
         botonLineas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 botonLineasMousePressed(evt);
+            }
+        });
+
+        botonAgrandarTamaño.setOrientation(javax.swing.JSlider.VERTICAL);
+
+        jCheckBox1.setText("Discontinuas");
+
+        jCheckBox2.setText("Relleno");
+        jCheckBox2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jCheckBox2MousePressed(evt);
             }
         });
 
@@ -469,9 +484,6 @@ public class VentanaPaint1 extends javax.swing.JFrame {
 
         jMenuBar1.add(MenuArchivo);
 
-        MenuEditar.setText("Edit");
-        jMenuBar1.add(MenuEditar);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -481,130 +493,145 @@ public class VentanaPaint1 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonCirculos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonCuadrados, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(botonEstrella, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonTriangulo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(botonPentagono, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonDibujoLibre, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(41, 41, 41)
-                        .addComponent(botonAgrandarTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jCheckBox1)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(botonTriangulo, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(botonPentagono, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(botonDibujoLibre, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(botonLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jCheckBox2)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(botonCirculos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(botonCuadrados, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                        .addComponent(botonEstrella, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(8, 8, 8)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(botonAzul13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(botonAzul14, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(botonAzul15, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(botonAzul, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(botonAzul7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(botonAzul16, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(botonAzul17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(botonAzul12, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(botonAzul3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(botonAzul10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(botonAzul6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(botonAzul13, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonAzul14, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonAzul15, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonAzul16, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonAzul17, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(botonAzul12, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(botonAzul, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(botonAzul7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul8, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(botonAzul6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(botonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botonAgrandarTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(botonColor, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12))
-                    .addComponent(lienzo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)))
+                .addComponent(lienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(botonZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(botonColor, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(botonCuadrados, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(botonTriangulo)
-                                .addComponent(botonCirculos))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(botonAgrandarTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(botonDibujoLibre)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonEstrella, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(botonPentagono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(botonLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(botonAzul, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonAzul2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonAzul1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(botonAzul3, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(botonAzul5, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(botonAzul4, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botonAzul10, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul6, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul11, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botonAzul16, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul12, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul17, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botonAzul, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botonAzul7, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul9, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul8, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botonAzul13, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul15, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(botonAzul14, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(11, 11, 11)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(botonAzul7, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul9, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul8, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul10, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul6, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul11, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(botonCuadrados, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(botonCirculos))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(botonHexagono, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonEstrella, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(botonAzul13, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul15, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul14, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul16, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul12, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(botonAzul17, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(botonColor, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(botonBorrar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                                    .addComponent(botonTriangulo)
+                                    .addComponent(botonDibujoLibre))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(botonPentagono, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(botonLineas, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCheckBox1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCheckBox2))
+                            .addComponent(botonAgrandarTamaño, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(botonBorrar))
+                    .addComponent(lienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(15, 15, 15))
         );
 
         pack();
@@ -612,210 +639,126 @@ public class VentanaPaint1 extends javax.swing.JFrame {
 
 
     private void lienzoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMousePressed
-       
-        
-        
-        switch (numLados) {
+switch (numLados) {
 
             case 3:
-                miforma = new Triangulo(evt.getX(), evt.getY(),
-                        colorSeleccionado, true);
+                miForma = new Triangulo(evt.getX(), evt.getY(),
+                        colorSeleccionado,jCheckBox2.isSelected());
                 break;
 
             case 4:
-                miforma = new Cuadrado(evt.getX(), evt.getY(),
-                        colorSeleccionado, true);
+                miForma = new Cuadrado(evt.getX(), evt.getY(),
+                        colorSeleccionado, jCheckBox2.isSelected());
                 break;
             case 5:
-                miforma = new Pentagono(evt.getX(), evt.getY(),
-                        colorSeleccionado, true);
+                miForma = new Pentagono(evt.getX(), evt.getY(),
+                        colorSeleccionado, jCheckBox2.isSelected());
                 break;
             case 6:
-                miforma = new Hexagono(evt.getX(), evt.getY(),
-                        colorSeleccionado, true);
+                miForma = new Hexagono(evt.getX(), evt.getY(),
+                        colorSeleccionado, jCheckBox2.isSelected());
                 break;
             case 100:
-                miforma = new Circulo(evt.getX(), evt.getY(),
-                        colorSeleccionado, true);
+                miForma = new Circulo(evt.getX(), evt.getY(),
+                        colorSeleccionado, jCheckBox2.isSelected());
                 break;
             case 12:
-                miforma = new Estrella(evt.getX(), evt.getY(),
-                        colorSeleccionado, true);
+                miForma = new Estrella(evt.getX(), evt.getY(),
+                        colorSeleccionado, jCheckBox2.isSelected());
                 break;
             case 0:
-                miforma = new Linea(evt.getX(), evt.getY(),
+                miForma = new Linea(evt.getX(), evt.getY(),
                         colorSeleccionado, true);
-                
-            case 1: miforma = new Linea(evt.getX(), evt.getY(),
-                        Color.WHITE, true);
+
+            case 1:
+                miForma = new Linea(evt.getX(), evt.getY(),
+                        colorSeleccionado, true);
         }
 
-        
-        
-        switch (formaSeleccionada){
-            
+        switch (formaSeleccionada) {
+
             case 0:
-            linea.x1 = evt.getX();
-            linea.x2 = evt.getX();
-            linea.y1 = evt.getY();
-            linea.y2 = evt.getY();
-            
-            bufferGraphics.draw(linea);break;
-            
-            
-        }
-//        switch(formaSeleccionada){
-//        case 0: miCirculo =new Circulo(evt.getX(), evt.getY(), 10, colorSeleccionado,true);
-//        miCirculo.dibujate(bufferGraphics,evt.getX());
-//        break;
-//        
-//        case 1: miCuadrado =new Cuadrado(evt.getX(), evt.getY(), 1, colorSeleccionado,true);
-//        miCuadrado.dibujate(bufferGraphics,evt.getX());
-//        break;
-//        
-//        
-//         case 2: miTriangulo =new Triangulo(evt.getX(), evt.getY(), 10, colorSeleccionado,true);
-//        miCuadrado.dibujate(bufferGraphics,evt.getX());
-//        break;
-//        
-//        
-//        case 3: 
-//               miPentagono = new Pentagono(evt.getX(), evt.getY(), new int[5], new int[5], colorSeleccionado, true); 
-//               
-//               break; 
-//
-//        
-//        case 4: 
-//  miHexagono = new Hexagono(evt.getX(), evt.getY(), new int[6], new int[6], colorSeleccionado, true); 
-//               
-//               break;      
-//        
-//        
-//    }
-        repaint(0, 0, 1, 1);
+                linea.x1 = evt.getX();
+                linea.x2 = evt.getX();
+                linea.y1 = evt.getY();
+                linea.y2 = evt.getY();
 
+                bufferGraphics.draw(linea);
+                break;
+
+        }
+
+        repaint(0, 0, 1, 1);
     }//GEN-LAST:event_lienzoMousePressed
 
 
     private void lienzoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMouseDragged
+ bufferGraphics.drawImage(buffer2, 0, 0, null);
+        if (jCheckBox1.isSelected()) {
+            miForma.dibujate(bufferGraphics, evt.getY(), evt.getX(), new Trazo(botonAgrandarTamaño.getValue(), true));
+        } else {
+            miForma.dibujate(bufferGraphics, evt.getY(), evt.getX(), new Trazo(botonAgrandarTamaño.getValue()));
+        }
+        repaint(0, 0, 1, 1);
 
-         
-        
-        bufferGraphics.drawImage(buffer2, 0, 0, null);
+        switch (formaSeleccionada) {
 
-        miforma.dibujate(bufferGraphics, evt.getX(), evt.getY());
-
-        
-        
-        switch (formaSeleccionada){
-            
             case 0:
-            bufferGraphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
-            linea.x2 = evt.getX();
-            linea.y2 = evt.getY();
-            
-            bufferGraphics.draw(linea);break;
-            
+                bufferGraphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+                linea.x2 = evt.getX();
+                linea.y2 = evt.getY();
+
+                bufferGraphics.draw(linea);
+                break;
+
             case -2:
                 buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
                 linea.x1 = evt.getX();
-            linea.x2 = evt.getX();
-            linea.y1 = evt.getY();
-            linea.y2 = evt.getY();
-            
-            buffer2Graphics.draw(linea);break;
-                
+                linea.x2 = evt.getX();
+                linea.y1 = evt.getY();
+                linea.y2 = evt.getY();
+
+                buffer2Graphics.draw(linea);
+                break;
+
         }
-        /*//borro lo que hubiera en el lienzo
-         g2.setColor(Color.white);
-         g2.fillRect(0,0,buffer.getWidth(),buffer.getHeight());
-         */
-//          bufferGraphics.drawImage(buffer2, 0, 0, null);
-//          
-//          switch(formaSeleccionada){
-//              
-//              case 0://dibujo del circulo
-//      
-//                    miCirculo.dibujate(bufferGraphics,evt.getX()); break;
-//        
-//                case 1: //dibujo del cuadrado
-//                  
-//                    miCuadrado.dibujate(bufferGraphics, evt.getX());
-//                break;
-//                
-//                case 2: //dibujo del triangulo
-//                  
-//                    miTriangulo.dibujate(bufferGraphics, evt.getY());
-//                break;
-//                
-//                //dibujo del pentagono
-//               case 3: 
-//                   miPentagono.dibujate(bufferGraphics, evt.getY());break;
-//                   
-//                   
-//                 //dibujo del hexagono
-//                 case 4: 
-//                   miHexagono.dibujate(bufferGraphics, evt.getY());break;
-//          }
+
         lienzographics.drawImage(buffer, 0, 0, null);
         repaint(0, 0, 1, 1);
-
 
     }//GEN-LAST:event_lienzoMouseDragged
 
     private void lienzoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMouseReleased
+buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+        if (jCheckBox1.isSelected()) {
+            miForma.dibujate(buffer2Graphics, evt.getY(), evt.getX(), new Trazo(botonAgrandarTamaño.getValue(), true));
+        } else {
+            miForma.dibujate(buffer2Graphics, evt.getY(), evt.getX(), new Trazo(botonAgrandarTamaño.getValue()));
+        }
 
-        
-        buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
-        miforma.dibujate(buffer2Graphics, evt.getX(), evt.getY());
+        switch (formaSeleccionada) {
 
-        
-        
-        switch (formaSeleccionada){
-            
             case 0:
-        buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
-            linea.x2 = evt.getX();
-           
-            linea.y2 = evt.getY();
-            
-            buffer2Graphics.draw(linea);break;
-            
+                buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
+                linea.x2 = evt.getX();
+
+                linea.y2 = evt.getY();
+
+                buffer2Graphics.draw(linea);
+                break;
+
             case -2:
                 buffer2Graphics.setStroke(new BasicStroke(botonAgrandarTamaño.getValue()));
                 linea.x1 = evt.getX();
-            linea.x2 = evt.getX();
-            linea.y1 = evt.getY();
-            linea.y2 = evt.getY();
-            
-            buffer2Graphics.draw(linea);break;
-                
-        }
-//       switch(formaSeleccionada){
-//        case 0: 
-//        miCirculo.dibujate(buffer2Graphics,evt.getX());
-//        break;
-//        
-//        case 1: 
-//        miCuadrado.dibujate(buffer2Graphics,evt.getX());
-//        break;
-//        
-//        
-//        case 2: 
-//        miTriangulo.dibujate(buffer2Graphics,evt.getY());
-//        break;
-//        
-//         
-//          case 3:
-//              miPentagono.dibujate(buffer2Graphics, evt.getY());
-//                break;
-//                
-//         case 4:
-//              miHexagono.dibujate(buffer2Graphics, evt.getY());
-//                break;
+                linea.x2 = evt.getX();
+                linea.y1 = evt.getY();
+                linea.y2 = evt.getY();
+
+                buffer2Graphics.draw(linea);
+                break;
 
     }//GEN-LAST:event_lienzoMouseReleased
-
+    }
     private void botonColorMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonColorMousePressed
         EligeColor.setVisible(true);
     }//GEN-LAST:event_botonColorMousePressed
@@ -967,28 +910,36 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAzul17MousePressed
 
     private void botonBorrarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonBorrarMousePressed
-     
+
         buffer3 = (BufferedImage) lienzo.createImage(lienzo.getWidth(), lienzo.getHeight());
         buffer3Graphics = buffer2.createGraphics();
         //dibujamos rectangulo blanco de tamaño del lienzo
         buffer3Graphics.setColor(Color.white);
         buffer3Graphics.fillRect(0, 0, buffer2.getWidth(), buffer3.getHeight());
-        
+
     }//GEN-LAST:event_botonBorrarMousePressed
 
     private void botonDibujoLibreMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonDibujoLibreMousePressed
-       formaSeleccionada = -2;
-       numLados = 0;
+        formaSeleccionada = -2;
+        numLados = 0;
     }//GEN-LAST:event_botonDibujoLibreMousePressed
 
     private void botonLineasMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonLineasMousePressed
-       formaSeleccionada = 0;
-       numLados = 0;
+        formaSeleccionada = 0;
+        numLados = 0;
     }//GEN-LAST:event_botonLineasMousePressed
 
     private void menuImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuImprimirActionPerformed
-       
+
     }//GEN-LAST:event_menuImprimirActionPerformed
+
+    private void jCheckBox2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCheckBox2MousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBox2MousePressed
+
+    private void botonDibujoLibreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDibujoLibreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_botonDibujoLibreActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1007,20 +958,21 @@ public class VentanaPaint1 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VentanaPaint1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaPaint.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VentanaPaint1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaPaint.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VentanaPaint1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaPaint.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VentanaPaint1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VentanaPaint.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaPaint1().setVisible(true);
+                new VentanaPaint().setVisible(true);
             }
         });
     }
@@ -1029,7 +981,6 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     private javax.swing.JDialog EligeColor;
     private javax.swing.JDialog Guardar;
     private javax.swing.JMenu MenuArchivo;
-    private javax.swing.JMenu MenuEditar;
     private javax.swing.JMenuItem MenuGuardar;
     private javax.swing.JButton botonAceptar;
     private javax.swing.JSlider botonAgrandarTamaño;
@@ -1062,7 +1013,8 @@ public class VentanaPaint1 extends javax.swing.JFrame {
     private javax.swing.JButton botonLineas;
     private javax.swing.JButton botonPentagono;
     private javax.swing.JButton botonTriangulo;
-    private javax.swing.JSlider botonZoom;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JMenuBar jMenuBar1;

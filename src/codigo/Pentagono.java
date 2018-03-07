@@ -14,7 +14,7 @@ import javafx.scene.transform.Rotate;
 
 /**
  *
- * @author ruben
+ * @author Carlos Román
  */
 public class Pentagono extends Forma {
     
